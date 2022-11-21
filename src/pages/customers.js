@@ -4,12 +4,15 @@ import { CustomerListResults } from '../components/customer/customer-list-result
 import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { customers } from '../__mocks__/customers';
+import { useState } from 'react';
 
-const Page = () => (
+const Page = () => {
+
+  return (
   <>
     <Head>
       <title>
-        Customers | Material Kit
+        Doctors
       </title>
     </Head>
     <Box
@@ -27,7 +30,7 @@ const Page = () => (
       </Container>
     </Box>
   </>
-);
+)};
 
 Page.getLayout = (page) => (
   <DashboardLayout>

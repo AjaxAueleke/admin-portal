@@ -1,27 +1,59 @@
-import { useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { useEffect, useState } from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import PropTypes from "prop-types";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
   Card,
   Checkbox,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Typography
-} from '@mui/material';
-import { getInitials } from '../../utils/get-initials';
+  Typography,
+} from "@mui/material";
+import { getInitials } from "../../utils/get-initials";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
+export const CustomerListResults = ({ ...rest }) => {
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-
+  const [perPage, setPerPage] = useState(10);
+  const fetchCustomers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getalldocs?`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await res.json();
+      if (data.error) {
+        router.push("/login").catch((err) => console.log(err));
+      } else {
+        setCustomers(data.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (localStorage.getItem("token") == null) {
+      router.push("/login");
+    } else {
+      fetchCustomers();
+    }
+  },[]);
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -55,7 +87,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   };
 
   const handleLimitChange = (event) => {
-    setLimit(event.target.value);
+    setPerPage(event.target.value);
   };
 
   const handlePageChange = (event, newPage) => {
@@ -66,88 +98,54 @@ export const CustomerListResults = ({ customers, ...rest }) => {
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {customers.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
-                  </TableCell>
+          {loading ? (
+            <>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  height: "100%",
+                  margin: "auto",
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            </>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Phone</TableCell>
+                  <TableCell>Session Fee</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {customers.slice(0, perPage).map((customer) => (
+                  <TableRow hover key={customer.doctor_userId}>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <Avatar src={customer.doctor_photo} sx={{ mr: 2 }}>
+                          {getInitials(customer.doctor_name)}
+                        </Avatar>
+                        <Typography color="textPrimary" variant="body1">
+                          {customer.user_email}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{customer.user_email}</TableCell>
+                    <TableCell>{customer.doctor_phone}</TableCell>
+                    <TableCell>${customer.doctor_sessionfee}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </Box>
       </PerfectScrollbar>
       <TablePagination
@@ -156,7 +154,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
-        rowsPerPage={limit}
+        rowsPerPage={perPage}
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
@@ -164,5 +162,5 @@ export const CustomerListResults = ({ customers, ...rest }) => {
 };
 
 CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  customers: PropTypes.array.isRequired,
 };
