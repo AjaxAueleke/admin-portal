@@ -1,45 +1,17 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { CustomerListResults } from "../components/customer/customer-list-results";
-import { CustomerListToolbar } from "../components/customer/customer-list-toolbar";
+import { CustomerListResults } from "../components/appointment/customer-list-results";
+import { CustomerListToolbar } from "../components/appointment/customer-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { customers } from "../__mocks__/customers";
 import { useEffect, useState } from "react";
 
 const Page = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(10);
-  const [search, setSearch] = useState("");
-  const handleSearch = async (e) => {
-    console.log("SUBMITTING DATA")
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/searchdoc?name=${search}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = await res.json();
-      console.log("data", data);
-      if (data.status == "error") {
-        setCustomers([]);
-      } else {
-        setCustomers(data.data);
-      }
-      setLoading(false);
-    } catch (err) {}
-  };
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getalldocs?`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getallpatients?`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +41,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Doctors</title>
+        <title>Appointments</title>
       </Head>
       <Box
         component="main"
@@ -80,11 +52,7 @@ const Page = () => {
       >
         <Container maxWidth={false}>
           <CustomerListToolbar
-            handleSubmit={handleSearch}
-            handleChange={(e) => {
-              console.log("e", e.target.value);
-              setSearch(e.target.value);
-            }}
+           
           />
           <Box sx={{ mt: 3 }}>
             <CustomerListResults customers={customers} loading={loading} />

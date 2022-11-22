@@ -1,9 +1,8 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { CustomerListResults } from "../components/customer/customer-list-results";
-import { CustomerListToolbar } from "../components/customer/customer-list-toolbar";
+import { CustomerListResults } from "../components/patient/customer-list-results";
+import { CustomerListToolbar } from "../components/patient/customer-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { customers } from "../__mocks__/customers";
 import { useEffect, useState } from "react";
 
 const Page = () => {
@@ -17,7 +16,7 @@ const Page = () => {
     e.preventDefault();
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/searchdoc?name=${search}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/searchpatient?name=${search}`,
         {
           method: "GET",
           headers: {
@@ -39,7 +38,7 @@ const Page = () => {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getalldocs?`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getallpatients?`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

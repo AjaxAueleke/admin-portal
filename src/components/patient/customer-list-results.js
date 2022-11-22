@@ -51,11 +51,10 @@ export const CustomerListResults = ({ customers,loading,...rest }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Doctor</TableCell>
-                  <TableCell>Patient</TableCell>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Appointment Time</TableCell>
-                  <TableCell>Appointment Status</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Phone</TableCell>
+                  <TableCell>Gender</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -68,17 +67,17 @@ export const CustomerListResults = ({ customers,loading,...rest }) => {
                           display: "flex",
                         }}
                       >
-                        <Avatar src={customer.doctor_photo} sx={{ mr: 2 }}>
-                          {getInitials(customer.doctor_name)}
+                        <Avatar src={customer.patient_photo} sx={{ mr: 2 }}>
+                          {getInitials(customer.patient_name)}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
-                          {customer.user_email}
+                          {customer.patient_name}
                         </Typography>
                       </Box>
                     </TableCell>
                     <TableCell>{customer.user_email}</TableCell>
-                    <TableCell>{customer.doctor_phone}</TableCell>
-                    <TableCell>${customer.doctor_sessionfee}</TableCell>
+                    <TableCell>{customer.patient_phone}</TableCell>
+                    <TableCell>${customer.patient_gender}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
