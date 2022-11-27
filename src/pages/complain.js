@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { CustomerListResults } from "../components/patient/customer-list-results";
-import { CustomerListToolbar } from "../components/patient/customer-list-toolbar";
+import { CustomerListResults } from "../components/complain/customer-list-results";
+import { CustomerListToolbar } from "../components/complain/customer-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const Page = () => {
   const [customers, setCustomers] = useState([]);
@@ -11,34 +12,11 @@ const Page = () => {
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState("");
-  const handleSearch = async (e) => {
-    console.log("SUBMITTING DATA")
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/searchpatient?name=${search}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = await res.json();
-      console.log("data", data);
-      if (data.status == "error") {
-        setCustomers([]);
-      } else {
-        setCustomers(data.data);
-      }
-      setLoading(false);
-    } catch (err) {}
-  };
+  const router = useRouter();
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/getallpatients?`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/complains/getdoctorcomplains?`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +24,7 @@ const Page = () => {
         },
       });
       const data = await res.json();
-
+      console.log("data", data);
       if (data.error) {
         router.push("/login").catch((err) => console.log(err));
       } else {
@@ -79,11 +57,6 @@ const Page = () => {
       >
         <Container maxWidth={false}>
           <CustomerListToolbar
-            handleSubmit={handleSearch}
-            handleChange={(e) => {
-              console.log("e", e.target.value);
-              setSearch(e.target.value);
-            }}
           />
           <Box sx={{ mt: 3 }}>
             <CustomerListResults customers={customers} loading={loading} />

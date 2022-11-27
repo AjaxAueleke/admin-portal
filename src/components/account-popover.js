@@ -11,6 +11,8 @@ export const AccountPopover = (props) => {
 
   const handleSignOut = async () => {
     onClose?.();
+    localStorage.removeItem('token');
+    Router.push('/');
 
     // Check if authentication with Zalter is enabled
     // If not enabled, then redirect is not required
@@ -77,7 +79,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          John Doe
+          Admin
         </Typography>
       </Box>
       <MenuList

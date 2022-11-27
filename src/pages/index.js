@@ -36,7 +36,6 @@ const Page = () => {
         setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
     }
   };
   useEffect(() => {
@@ -72,16 +71,16 @@ const Page = () => {
           <Container maxWidth={false}>
             <Grid container spacing={3}>
               <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <Budget appointments={stats.appointment_cnt[0]["COUNT"]} />
+                <Budget appointments={stats?.appointment_cnt[0]["COUNT"]} />
               </Grid>
               <Grid item xl={3} lg={3} sm={6} xs={12}>
-                <TotalCustomers patients={stats.patient_cnt[0]["COUNT"]} />
+                <TotalCustomers patients={stats?.patient_cnt[0]["COUNT"]} />
               </Grid>
               <Grid item xl={3} lg={3} sm={6} xs={12}>
-                <TasksProgress doctors={stats.doctor_cnt[0]["COUNT"]} />
+                <TasksProgress doctors={stats?.doctor_cnt[0]["COUNT"]} />
               </Grid>
               <Grid item xl={3} lg={3} sm={6} xs={12}>
-                <TotalProfit amount={stats.money_earned[0]["SUM"]} sx={{ height: "100%" }} />
+                <TotalProfit amount={stats?.money_earned[0]["SUM"]} sx={{ height: "100%" }} />
               </Grid>
               {/* <Grid item lg={8} md={12} xl={9} xs={12}>
                 <Sales />
