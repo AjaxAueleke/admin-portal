@@ -45,14 +45,14 @@ export const TrafficByDevice = (props) => {
   const devices = [
     {
       title: "Doctors",
-      value: (parseInt(props.doctors) / (parseInt(props.doctors) + parseInt(props.patients))) * 100,
+      value: ((parseInt(props.doctors) / (parseInt(props.doctors) + parseInt(props.patients))) * 100).toFixed(2),
       icon: LaptopMacIcon,
       color: "#3F51B5",
     },
     {
       title: "Patient",
       value:
-        (parseInt(props.patients) / (parseInt(props.doctors) + parseInt(props.patients))) * 100,
+        ((parseInt(props.patients) / (parseInt(props.doctors) + parseInt(props.patients))) * 100).toFixed(2),
       icon: TabletIcon,
       color: "#E53935",
     },

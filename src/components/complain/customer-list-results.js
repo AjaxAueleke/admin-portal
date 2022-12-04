@@ -19,11 +19,11 @@ import {
 } from "@mui/material";
 import { getInitials } from "../../utils/get-initials";
 
-export const CustomerListResults = ({ customers, loading, ...rest }) => {
+export const CustomerListResults = ({ customers, loading, changeUpdate,  ...rest }) => {
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+ 
   const handleLimitChange = (event) => {
     setPerPage(event.target.value);
   };
@@ -103,13 +103,24 @@ export const CustomerListResults = ({ customers, loading, ...rest }) => {
                           console.log("remove doctor");
                           try {
                             setIsSubmitting(true);
+                            console.log(customer.doctor_userId);
                             const response = await fetch(
-                              `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/deleteuser/${customer.complain_appointmentId}`,
+                              `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/deleteuser/${customer.doctor_userId}`,
                               {
                                 method: "DELETE",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                },
                               }
                             );
+                            
                             const data = await response.json();
+                           
+                              changeUpdate();
+                            
+                            console.log(data)
+                            
                             setIsSubmitting(false);
                           } catch (err) {
                             console.log(err);
@@ -133,18 +144,22 @@ export const CustomerListResults = ({ customers, loading, ...rest }) => {
                                 method: "DELETE",
                                 headers: {
                                   "Content-Type": "application/json",
-                                  "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                                }
+                                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                },
                               }
                             );
                             const data = await response.json();
+                            console.log(data);
                             setIsSubmitting(false);
+                            changeUpdate();
                           } catch (err) {
                             console.log(err);
                             setIsSubmitting(false);
                           }
                         }}
-                      >Remove Complain</Button>
+                      >
+                        Remove Complain
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

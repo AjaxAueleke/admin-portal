@@ -13,16 +13,23 @@ const Page = () => {
   const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const [update, setUpdate] = useState(false);
+  const changeUpdate = () => {
+    setUpdate(!update);
+  };
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/complains/getdoctorcomplains?`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/complains/getdoctorcomplains?`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await res.json();
       console.log("data", data);
       if (data.error) {
@@ -41,7 +48,7 @@ const Page = () => {
     } else {
       fetchCustomers();
     }
-  }, []);
+  }, [update]);
 
   return (
     <>
@@ -56,10 +63,13 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <CustomerListToolbar
-          />
+          <CustomerListToolbar />
           <Box sx={{ mt: 3 }}>
-            <CustomerListResults customers={customers} loading={loading} />
+            <CustomerListResults
+              customers={customers}
+              loading={loading}
+              changeUpdate={changeUpdate}
+            />
           </Box>
         </Container>
       </Box>

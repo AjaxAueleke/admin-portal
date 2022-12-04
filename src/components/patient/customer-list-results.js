@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { getInitials } from "../../utils/get-initials";
 
-export const CustomerListResults = ({ customers,loading,...rest }) => {
+export const CustomerListResults = ({ customers,loading, changeUpdate,...rest }) => {
  
   const [page, setPage] = useState(0)
   const [perPage, setPerPage] = useState(10)
@@ -77,7 +77,7 @@ export const CustomerListResults = ({ customers,loading,...rest }) => {
                     </TableCell>
                     <TableCell>{customer.user_email}</TableCell>
                     <TableCell>{customer.patient_phone}</TableCell>
-                    <TableCell>${customer.patient_gender}</TableCell>
+                    <TableCell>{customer.patient_gender}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

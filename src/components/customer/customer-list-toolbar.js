@@ -55,7 +55,7 @@ export const CustomerListToolbar = (props) => {
       phone: "",
       gender: "male",
       sessionfee: "",
-      qualification: "",
+      qualifications: "",
       specializedtreatments: "",
     },
     validationSchema: Yup.object({
@@ -65,19 +65,31 @@ export const CustomerListToolbar = (props) => {
       confirmpassword: Yup.string().max(255).required("Confirm Password is required"),
       phone: Yup.string().max(255).required("Phone is required"),
       sessionfee: Yup.number().min(0).required("Session Fee is required"),
-      qualification: Yup.string().max(255).required("Qualification is required"),
+      qualifications: Yup.string().max(255).required("Qualification is required"),
       specializedtreatments: Yup.string().max(255).required("Specialized Treatments is required"),
     }),
     onSubmit: async (values, formikHelpers) => {
       try {
         console.log(values);
+        console.log({
+          ...values,
+          qualifications: [values.qualifications],
+          specializedtreatments: [values.specializedtreatments],
+          schedules,
+        });
         const ret = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/admin/createdoctor`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ ...values, schedules }),
+          body: JSON.stringify({
+            ...values,
+            qualifications: [values.qualifications],
+            specializedtreatments: [values.specializedtreatments],
+            schedules,
+          }),
         });
         console.log(ret);
         const data = await ret.json();
@@ -87,6 +99,9 @@ export const CustomerListToolbar = (props) => {
           return;
         }
         setErrors({ error: false, message: "" });
+
+        handleClose();
+        router.replace(router.asPath);
       } catch (err) {
         console.error("ERR");
         formikHelpers.setErrors({ submit: err.message });
@@ -250,16 +265,16 @@ export const CustomerListToolbar = (props) => {
                 variant="outlined"
               />
               <TextField
-                error={Boolean(formik2.touched.qualification && formik2.errors.qualification)}
+                error={Boolean(formik2.touched.qualifications && formik2.errors.qualifications)}
                 fullWidth
-                helperText={formik2.touched.qualification && formik2.errors.qualification}
-                label="qualification"
+                helperText={formik2.touched.qualifications && formik2.errors.qualifications}
+                label="qualifications"
                 margin="normal"
-                name="qualification"
+                name="qualifications"
                 onBlur={formik2.handleBlur}
                 onChange={formik2.handleChange}
                 type="text"
-                value={formik2.values.qualification}
+                value={formik2.values.qualifications}
                 variant="outlined"
               />
               <TextField
@@ -350,6 +365,7 @@ export const CustomerListToolbar = (props) => {
                       value={schedules[index].till}
                       variant="outlined"
                     />
+
                     <TextField
                       label="location"
                       fullWidth
@@ -362,6 +378,34 @@ export const CustomerListToolbar = (props) => {
                       }}
                       type="text"
                       value={schedules[index].location}
+                      variant="outlined"
+                    />
+                    <TextField
+                      label="latitude"
+                      fullWidth
+                      margin="normal"
+                      name="latitude"
+                      onChange={(e) => {
+                        const newSchedules = [...schedules];
+                        newSchedules[index].latitude = e.target.value;
+                        setSchedules(newSchedules);
+                      }}
+                      type="text"
+                      value={schedules[index].latitude}
+                      variant="outlined"
+                    />
+                    <TextField
+                      label="longitude"
+                      fullWidth
+                      margin="normal"
+                      name="longitude"
+                      onChange={(e) => {
+                        const newSchedules = [...schedules];
+                        newSchedules[index].longitude = e.target.value;
+                        setSchedules(newSchedules);
+                      }}
+                      type="text"
+                      value={schedules[index].longitude}
                       variant="outlined"
                     />
                     <TextField

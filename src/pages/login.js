@@ -32,7 +32,7 @@ const Login = () => {
         if (data.error) {
           setErrors({
             error: true,
-            message: data.message,
+            message: data.error,
           });
         } else {
           localStorage.setItem("token", data.token);
@@ -82,6 +82,13 @@ const Login = () => {
         console.log(ret);
         const data = await ret.json();
         console.log(data);
+        if (data.status=="error") {
+          setErrors({
+            error: true,
+            message: data.error,
+          });
+          return;
+        }
         setErrors({ error: false, message: "" });
         setCodeSent(true);
       } catch (err) {

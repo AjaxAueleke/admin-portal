@@ -47,6 +47,7 @@ const Page = () => {
         },
       });
       const data = await res.json();
+      console.log(data)
 
       if (data.error) {
         router.push("/login").catch((err) => console.log(err));

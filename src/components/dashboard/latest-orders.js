@@ -142,7 +142,7 @@ export const LatestOrders = (props) => {
                   <TableCell>{order.id}</TableCell>
                   <TableCell>{order.patient.name}</TableCell>
                   <TableCell>{order.doctorschedule.doctor.name}</TableCell>
-                  <TableCell>{format(new Date(order.aptdate), "dd/MM/yyyy")}</TableCell>
+                  <TableCell>{order.aptdate}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

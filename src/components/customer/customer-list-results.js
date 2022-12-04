@@ -52,10 +52,9 @@ export const CustomerListResults = ({ customers,loading,...rest }) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Doctor</TableCell>
-                  <TableCell>Patient</TableCell>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Appointment Time</TableCell>
-                  <TableCell>Appointment Status</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Phone</TableCell>
+                  <TableCell>Session Free</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -72,7 +71,7 @@ export const CustomerListResults = ({ customers,loading,...rest }) => {
                           {getInitials(customer.doctor_name)}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
-                          {customer.user_email}
+                          {customer.doctor_name}
                         </Typography>
                       </Box>
                     </TableCell>
